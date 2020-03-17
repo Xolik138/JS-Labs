@@ -1,1 +1,1 @@
-# Lab2
+Labs on the WEB in PNZGU
