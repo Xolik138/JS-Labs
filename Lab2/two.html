@@ -3,22 +3,21 @@
 <head>
   <meta charset="utf-8">
   <script>
-    function count()
-    {
-      var len = input.value.split(/\s+/).length;
-      if (len == 0)
-      {
-        var answer = "NO";
-        alert(answer);
+    function count() {
+      if (input.value.length != 0) {
+        var len = input.value.split("[\\s,.:!?-]+").length;
+        var answer = "Количество слов в строке: " + len;
       } else {
-        var answer = "Количество символов: " + len;
-        alert(answer);
+        var answer = "NO";
       }
+      alert(answer);
     }
   </script>
 </head>
+
 <body>
   <input id="input" type="text" placeholder="Введите текст">
   <a onclick="count()">Подсчитать</a>
   </<body>
+
 </html>
