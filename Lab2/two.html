@@ -5,7 +5,7 @@
   <script>
     function count() {
       if (input.value.length != 0) {
-        var len = input.value.split("[\\s,.:!?-]+").length;
+        var len = input.value.split(" ").length;
         var answer = "Количество слов в строке: " + len;
       } else {
         var answer = "NO";
