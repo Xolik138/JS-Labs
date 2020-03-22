@@ -1,6 +1,7 @@
 var fs = require("fs");
 var http = require("http");
 var url = require("url");
+var querystring = require("querystring");
 
 function start(route, handle) {
   function onRequest(request, response) {
@@ -10,6 +11,7 @@ function start(route, handle) {
     request.setEncoding("utf8");
     request.addListener("data", function(postDataChunk) {
       postData += postDataChunk;
+      pathname ="/"+ querystring.parse(postData).text.split(' ')[0];
       console.log("Received POST data chunk '" +
         postDataChunk + "'.");
     });
