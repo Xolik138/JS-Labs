@@ -5,8 +5,18 @@
   <script>
     function count() {
       if (input.value.length != 0) {
-        var len = input.value.split(" ").length;
-        var answer = "Количество слов в строке: " + len;
+        var str = input.value.split(" ");
+        var countans = 0;
+        for (let i = 0; i < str.length; i++) {
+          if (!/[^А-яЁёA-z\.]/.test(str[i])) {
+            countans++;
+          }
+        }
+        if (countans != 0) {
+          var answer = "Кол-во слов в строке " + countans;
+        } else {
+          var answer = "NO";
+        }
       } else {
         var answer = "NO";
       }
