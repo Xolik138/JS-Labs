@@ -5,29 +5,67 @@
   charset=UTF-8" />
   <script>
     let animanls = ["giena", "gazel", "gekkon"];
-
-    function validate(form) {
+    var value = null;
+    var height = null;
+    var width = null;
+    var color = null;
+    async function validate(form) {
       for (let i = 0; i < animanls.length; i++) {
         if (form.text.value == animanls[i]) {
-          return true;
+          var msgJSON = jsonpost(form.text.value, value, height, width, color);
+          fetch("/" + form.text.value, {
+              method: "POST",
+              body: JSON.stringify(msgJSON)
+            })
+            .then(res => {
+              if (!response.ok) throw Error(response.statusText);
+              return response.json();
+            })
+            .then(data => console.log(data))
+            .catch(error => console.log(error));
+            return true;
         }
         for (let j = 0; j < 9; j++) {
           if (form.text.value == animanls[i] + " " + j) {
-            return true;
+            var animal = form.text.value.split(" ")[0];
+            var msgJSON = jsonpost(animal, j, height, width, color);
+            fetch("/" + animal, {
+                method: "POST",
+                body: JSON.stringify(msgJSON)
+              })
+              .then(res => {
+                if (!response.ok) throw Error(response.statusText);
+                return response.json();
+              })
+              .then(data => console.log(data))
+              .catch(error => console.log(error));
+              return true;
           }
         }
       }
       alert("Error Data");
       return false;
     }
+
+    function jsonpost(name, value, height, width, color) {
+      let animanlsJSON = {
+        name: name,
+        value: value,
+        height: height,
+        width: width,
+        color: color
+      };
+      return animanlsJSON;
+    }
+    var test = 0;
   </script>
 
 </head>
 
 <body>
-  <form method="post" onsubmit="return validate(this);">
+  <form onsubmit="return validate(this);">
     <textarea name="text" rows="5" cols="60"></textarea>
-    <input type="submit" value="Submit text" />
+    <input type="submit" value="Submit text">
   </form>
 </body>
 
