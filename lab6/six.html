@@ -21,7 +21,7 @@
               if (!response.ok) throw Error(response.statusText);
               return response.json();
             })
-            .then(data => console.log(data))
+            .then(data => alert(data))
             .catch(error => console.log(error));
             return true;
         }
@@ -37,7 +37,7 @@
                 if (!response.ok) throw Error(response.statusText);
                 return response.json();
               })
-              .then(data => console.log(data))
+              .then(data => alert(data))
               .catch(error => console.log(error));
               return true;
           }
@@ -57,7 +57,6 @@
       };
       return animanlsJSON;
     }
-    var test = 0;
   </script>
 
 </head>
