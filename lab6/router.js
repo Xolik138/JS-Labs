@@ -1,11 +1,8 @@
 const express = require("express");
 var fs = require("fs");
-var sizeOf = require('image-size');
 const Gazel = require("./gazel");
 const Gekkon = require("./gekkon");
 const Giena = require("./giena");
-var path = require('path')
-var serveStatic = require('serve-static');
 const router = express.Router();
 
 var navivod;

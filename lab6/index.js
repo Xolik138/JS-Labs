@@ -1,8 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-var bodyParser = require('body-parser')
-var path = require('path')
-var serveStatic = require('serve-static');
+var bodyParser = require('body-parser');
 const app = express();
 
 mongoose.connect("mongodb://localhost/animaldb")
