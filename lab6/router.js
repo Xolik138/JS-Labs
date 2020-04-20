@@ -4,7 +4,11 @@ var sizeOf = require('image-size');
 const Gazel = require("./gazel");
 const Gekkon = require("./gekkon");
 const Giena = require("./giena");
+var path = require('path')
+var serveStatic = require('serve-static');
 const router = express.Router();
+
+var navivod;
 
 router.get("/", (req, res) => {
   console.log("GET /");
@@ -29,14 +33,18 @@ router.post("/gazel", async (req, res) => {
   }).exec();
   console.log(data[0].color);
 
-  proverka(acjson,data[0]);
+  navivod = proverka("gazel", acjson, data[0]);
   console.log("POST /gazel")
+  res.redirect("/gazel")
 })
+
 router.get("/gazel", async (req, res) => {
   console.log(req.body);
-  var body = fs.readFileSync('gazel/9.jpg');
+  res.json(navivod);
   console.log("GET /gazel")
+  navivod = "";
 })
+
 router.post("/gekkon", async (req, res) => {
   var result = req.body;
   console.log(result);
@@ -50,14 +58,19 @@ router.post("/gekkon", async (req, res) => {
   }).exec();
   console.log(data[0].color);
 
-  proverka(acjson,data[0]);
-
-  console.log("POST /gekkon")
+  navivod = proverka("gekkon", acjson, data[0]);
+  res.redirect("/gekkon");
+  console.log("POST /gekkon");
 })
+
 router.get("/gekkon", (req, res) => {
   console.log(req.body);
-  console.log("GET /gekkon")
+  console.log(navivod);
+  res.json(navivod);
+  console.log("GET /gekkon");
+  navivod = "";
 })
+
 router.post("/giena", async (req, res) => {
   var result = req.body;
   console.log(result);
@@ -71,44 +84,65 @@ router.post("/giena", async (req, res) => {
   }).exec();
   console.log(data[0].color);
 
-  proverka(acjson,data[0]);
-
-  console.log("POST /giena")
+  navivod = proverka("giena", acjson, data[0]);
+  res.redirect("/giena");
+  console.log("POST /giena");
 })
+
 router.get("/giena", (req, res) => {
   console.log(req.body);
-  console.log("GET /giena")
+  console.log(navivod);
+  res.json(navivod);
+  console.log("GET /giena");
+    navivod = "";
 })
 
 
-function proverka(acjson,data){
-    if (acjson.width == null & acjson.height == null) {
-      acjson.width = data.width;
-      acjson.height = data.height;
-      if (acjson.color == null) {
-        acjson.color = data.color;
-      }
-    }
-    if (acjson.width == null) {
-      acjson.width = Math.floor(Math.random() * 3000);
-    }
-    if (acjson.height == null) {
-      acjson.height = Math.floor(Math.random() * 3000);
-    }
+function proverka(animal, acjson, data) {
+  if (acjson.width == null & acjson.height == null) {
+    acjson.width = data.width;
+    acjson.height = data.height;
     if (acjson.color == null) {
-      var possible = "abcdefghijklmnopqrstuvwxyz0123456789";
-      var text = "";
-      for (var i = 0; i < 6; i++)
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-      acjson.color = "#" + text;
+      acjson.color = data.color;
     }
-    if (acjson.value == data.value & acjson.width == data.width &
-      acjson.height == data.height & acjson.color == data.color) {
-      var body = fs.readFileSync('gazel/' + acjson.value + '.jpg');
-      console.log("Vse Norm");
-    } else {
-      console.log("error");
-    }
+  }
+  if (acjson.width == null) {
+    acjson.width = Math.floor(Math.random() * 3000);
+  }
+  if (acjson.height == null) {
+    acjson.height = Math.floor(Math.random() * 3000);
+  }
+  if (acjson.color == null) {
+    var possible = "abcdefghijklmnopqrstuvwxyz0123456789";
+    var text = "";
+    for (var i = 0; i < 6; i++)
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    acjson.color = "#" + text;
+  }
+  if (acjson.value == data.value & acjson.width == data.width &
+    acjson.height == data.height & acjson.color == data.color) {
+    console.log("Vse Norm");
+  } else {
+    console.log("error");
+    return ["Error" ,{
+      "value": acjson.value
+    }, {
+      "width": acjson.width
+    }, {
+      "height": acjson.height
+    }, {
+      "color": acjson.color
+    }];
+  }
+  return [animal + "/" + acjson.value + '.jpg', {
+    "value": acjson.value
+  }, {
+    "width": acjson.width
+  }, {
+    "height": acjson.height
+  }, {
+    "color": acjson.color
+  }]
 }
 
 module.exports = router;
