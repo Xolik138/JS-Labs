@@ -4,142 +4,116 @@ const Gazel = require("./gazel");
 const Gekkon = require("./gekkon");
 const Giena = require("./giena");
 const router = express.Router();
+let jsonbody = null;
+let imgerror = null;
 
-var navivod;
-
-router.get("/", (req, res) => {
-  console.log("GET /");
-  var body = fs.readFileSync('six.html');
-  res.writeHead(200, {
-    "Content-Type": "text/html"
-  });
-  res.write(body);
-  res.end();
+router.get("/animals", (req, res)=>{
+  console.log(jsonbody);
+  res.send(jsonbody);
 });
 
-router.post("/gazel", async (req, res) => {
-  var result = req.body;
-  console.log(result);
-  var acjson = JSON.parse(result);
-  if (acjson.value == null) {
-    acjson.value = Math.floor(Math.random() * 9 + 1);
-    console.log(acjson.value);
+router.post("/findanimal", (req, res)=>{
+  var result = JSON.parse(req.body);
+
+  var name = result.name;
+
+  if (result.value == '')
+  {
+      value = Math.floor(Math.random() * 9 + 1);
   }
-  const data = await Gazel.find({
-    value: acjson.value
-  }).exec();
-  console.log(data[0].color);
-
-  navivod = proverka("gazel", acjson, data[0]);
-  console.log("POST /gazel")
-  res.redirect("/gazel")
-})
-
-router.get("/gazel", async (req, res) => {
-  console.log(req.body);
-  res.json(navivod);
-  console.log("GET /gazel")
-  navivod = "";
-})
-
-router.post("/gekkon", async (req, res) => {
-  var result = req.body;
-  console.log(result);
-  var acjson = JSON.parse(result);
-  if (acjson.value == null) {
-    acjson.value = Math.floor(Math.random() * 9 + 1);
-    console.log(acjson.value);
+  else{
+    var value = result.value;
   }
-  const data = await Gekkon.find({
-    value: acjson.value
-  }).exec();
-  console.log(data[0].color);
 
-  navivod = proverka("gekkon", acjson, data[0]);
-  res.redirect("/gekkon");
-  console.log("POST /gekkon");
-})
+  var modelan = null;
 
-router.get("/gekkon", (req, res) => {
-  console.log(req.body);
-  console.log(navivod);
-  res.json(navivod);
-  console.log("GET /gekkon");
-  navivod = "";
-})
-
-router.post("/giena", async (req, res) => {
-  var result = req.body;
-  console.log(result);
-  var acjson = JSON.parse(result);
-  if (acjson.value == null) {
-    acjson.value = Math.floor(Math.random() * 9 + 1);
-    console.log(acjson.value);
+  if (name == "gekko"){
+    var modelan = Gekkon;
   }
-  const data = await Giena.find({
-    value: acjson.value
-  }).exec();
-  console.log(data[0].color);
+  else if (name == "gazel"){
+    var modelan = Gazel;
+  }
+  else if (name == "giena"){
+    var modelan = Giena;
+  }
 
-  navivod = proverka("giena", acjson, data[0]);
-  res.redirect("/giena");
-  console.log("POST /giena");
-})
+  modelan.findOne({value: value})
+      .then(animal => {  
+          { 
+              res.send({name, value: animal.value, width: animal.width, height: animal.height, color: animal.color});
+          }
+      })
+});
 
-router.get("/giena", (req, res) => {
-  console.log(req.body);
-  console.log(navivod);
-  res.json(navivod);
-  console.log("GET /giena");
-    navivod = "";
-})
+router.post("/animal", (req, res)=>{
+  var result = JSON.parse(req.body);
 
+  var name = result.name;
+  var value = result.value;
+  var height = result.height;
+  var width = result.width;
+  var color = result.color;
+  console.log(height);
+  console.log(width);
+  console.log(color);
+  var modelan = null;
 
-function proverka(animal, acjson, data) {
-  if (acjson.width == null & acjson.height == null) {
-    acjson.width = data.width;
-    acjson.height = data.height;
-    if (acjson.color == null) {
-      acjson.color = data.color;
-    }
+  if (name == "gekko"){
+    var modelan = Gekkon;
   }
-  if (acjson.width == null) {
-    acjson.width = Math.floor(Math.random() * 3000);
+  else if (name == "gazel"){
+    var modelan = Gazel;
   }
-  if (acjson.height == null) {
-    acjson.height = Math.floor(Math.random() * 3000);
+  else if (name == "giena"){
+    var modelan = Giena;
   }
-  if (acjson.color == null) {
-    var possible = "abcdefghijklmnopqrstuvwxyz0123456789";
-    var text = "";
-    for (var i = 0; i < 6; i++)
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-    acjson.color = "#" + text;
+
+  if (width == "")
+  {
+      width = Math.floor(Math.random() * 3000);
   }
-  if (acjson.value == data.value & acjson.width == data.width &
-    acjson.height == data.height & acjson.color == data.color) {
-    console.log("Vse Norm");
-  } else {
-    console.log("error");
-    return ["Error" ,{
-      "value": acjson.value
-    }, {
-      "width": acjson.width
-    }, {
-      "height": acjson.height
-    }, {
-      "color": acjson.color
-    }];
+  if (height == "")
+  {
+      height = Math.floor(Math.random() * 3000);
   }
-  return [animal + "/" + acjson.value + '.jpg', {
-    "value": acjson.value
-  }, {
-    "width": acjson.width
-  }, {
-    "height": acjson.height
-  }, {
-    "color": acjson.color
-  }]
-}
+  if (color == "")
+  {
+      var coloring = "abcdefghijklmnopqrstuvwxyz0123456789";
+      var color = "";
+      for (var i = 0; i < 6; i++)
+          color += coloring.charAt(Math.floor(Math.random() * coloring.length));
+  }
+  console.log(height);
+  console.log(width);
+  console.log(color);
+  modelan.findOne({value: value})
+  .then(animal => {
+      modelan.findOne({width: width, height: height})
+          .then(animal => {      
+              if (animal != null)
+              {
+                modelan.findOne({color: color})
+                  .then(animal => {      
+                      if (animal != null)
+                      {
+                          jsonbody = animal;
+                          res.redirect("./animals");
+                      }
+                      else
+                      {
+                          imgerror = {error: "Color error", name: name, value: value, width: width, height: height, color: color};
+                          res.send(imgerror);
+                      }
+                  });
+              }
+              else 
+              {
+                  imgerror = {error: "Size error", name: name, value: value, width: width, height: height,color: color};
+                  res.send(imgerror);
+              }
+          });
+      }
+    );
+ });
 
 module.exports = router;
